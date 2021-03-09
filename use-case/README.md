@@ -1,11 +1,6 @@
-# Use Case: Popular NASA Shuttle Missions
+# Use Case: Ranking the most popular car brands in the world.
 
-```json
-{ 
-	mission: 'sts-10', 
-	timestamp: 1604325221 
-}
-```
+
 
 ## Prerequisites
 
