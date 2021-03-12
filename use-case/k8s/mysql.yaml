@@ -1,0 +1,98 @@
+#Begin: Configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-deployment-init-configmap
+data:
+  mysql-init.sql: |
+    CREATE TABLE `companies` (
+      `name` VARCHAR(30) NOT NULL,
+      `origin`  VARCHAR(5000),
+      `segment` VARCHAR(1000),
+      `logo_link` VARCHAR(5000),
+      PRIMARY KEY (`name`)
+    );
+
+    CREATE TABLE `ranking` (
+      `name` VARCHAR(30) NOT NULL,
+      `count` BIGINT,
+       PRIMARY KEY (`name`)
+    );
+
+
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Toyota','Japan','Mass-Market Cars','https://www.carlogos.org/car-logos/toyota-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Honda','Japan','Mass-Market Cars','https://www.carlogos.org/car-logos/honda-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Chevrolet','United States','Mass-Market Cars','https://www.carlogos.org/car-logos/chevrolet-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Ford','United States','Mass-Market Cars','https://www.carlogos.org/car-logos/ford-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Mercedes-Benz','Germany','Luxury Vehicles','https://www.carlogos.org/car-logos/mercedes-benz-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Jeep','United States','Sport Utility Vehicles','https://www.carlogos.org/car-logos/jeep-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('BMW','Germany','Luxury Vehicles','https://www.carlogos.org/car-logos/bmw-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Porsche','Germany','Luxury Sports Cars','https://www.carlogos.org/car-logos/porsche-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Subaru','Japan','Mass-Market Cars','https://www.carlogos.org/car-logos/subaru-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Nissan','Japan','Mass-Market Cars','https://www.carlogos.org/car-logos/nissan-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Cadillac','United States','Luxury Vehicles','https://www.carlogos.org/car-logos/cadillac-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Volkswagen','Germany','Mass-Market Cars','https://www.carlogos.org/car-logos/volkswagen-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Lexus','Japan','Luxury Vehicles','https://www.carlogos.org/car-logos/lexus-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Audi','Germany','Luxury Vehicles','https://www.carlogos.org/car-logos/audi-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Ferrari','Italy','Super Luxury Sports Cars','https://www.carlogos.org/car-logos/ferrari-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Volvo','Sweden','Luxury Vehicles','https://www.carlogos.org/car-logos/volvo-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Jaguar','United Kingdom','Luxury Vehicles','https://www.carlogos.org/car-logos/jaguar-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('GMC','United States','Pickup Trucks','https://www.carlogos.org/car-logos/gmc-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Buick','United States','Mass-Market Cars','https://www.carlogos.org/car-logos/buick-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Acura','Japan',',Luxury Vehicles','https://www.carlogos.org/car-logos/acura-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Bentley','United Kingdom','Ultra-luxury Cars','https://www.carlogos.org/car-logos/bentley-logo.png');
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: my-mysql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-mysql
+  template:
+    metadata:
+      labels:
+        app: my-mysql
+    spec:
+      # Mount the configmap volume
+      # This is an excerpt of deployment.spec.template.spec
+      volumes:
+        - name: init-volume
+          configMap:
+            name: mysql-deployment-init-configmap
+      containers:
+        - name: my-mysql
+          image: mysql
+          volumeMounts:
+            - name: init-volume
+              mountPath: /docker-entrypoint-initdb.d/
+          # Set required environment variables to initialize the container
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "mysecretpw"
+            - name: MYSQL_DATABASE
+              value: "ranking"
+          ports:
+            - containerPort: 33060
+
+---
+#Begin: Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-mysql-service
+spec:
+  selector:
+    app: my-mysql
+  ports:
+    - name: mysql-xproto
+      protocol: TCP
+      port: 33060
+      targetPort: 33060
+#End: Service
