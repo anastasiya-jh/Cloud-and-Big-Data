@@ -159,13 +159,36 @@ function sendResponse(res, html, cachedResult) {
 			</script>
 		</head>
 		<body>
-			<h1>Demo Car-Company-Ranking</h1>
-			<p>
+		<div id="scoped-content">
+			<style type="text/css" scoped>
+			#scoped-content {
+				display: flex;
+				flex-direction: column;
+			}
+			body {
+				color: #6864e2;
+			}
+			a:hover {
+				color: #6864e2;
+			}
+			ul { //Server Infos
+				color: #2f1264;
+			}
+			</style>
+			<h1>Demo Car Company Ranking</h1>
+			<p>  
 				<a href="javascript: fetchRandomCompanies();">Randomly fetch some companies</a>
 				<span id="out"></span>
 			</p>
 			${html}
 			<hr>
+			<div class="footer">
+			<style type="text/css" scoped>
+			.footer {
+				margin: 20px;
+				left: 2rem;
+			}
+			</style>
 			<h2>Information about the generated page</h4>
 			<ul>
 				<li>Server: ${os.hostname()}</li>
@@ -173,6 +196,7 @@ function sendResponse(res, html, cachedResult) {
 				<li>Using ${memcachedServers.length} memcached Servers: ${memcachedServers}</li>
 				<li>Cached result: ${cachedResult}</li>
 			</ul>
+			</div>
 		</body>
 	</html>
 	`)
@@ -223,19 +247,71 @@ app.get("/", (req, res) => {
 
 		const companiesHtml = companies.result
 			.map(m => `<a href='companies/${m}'>${m}</a>`)
-			.join(", ")
+			.join(" ")
 
 		const rankingHtml = ranking
-			.map(pop => `<li> <a href='companies/${pop.name}'>${pop.name}</a> (${pop.count} views) </li>`)
+			.map(pop => `<li> <a style="color:white;" href='companies/${pop.name}'>${pop.name}</a> (${pop.count} views) </li>`)
 			.join("\n")
 
 		const html = `
-			<h1>Top ${topX} ranked Companies </h1>		
+			<div class="ranked">
+			<style type="text/css" scoped>
+			.ranked ol {
+				border-radius: 7px;
+				margin: 20px;
+				width: 350px;
+				padding: 20px;
+				list-style: none;
+				counter-reset: item;
+			}
+			.ranked li {
+				color: white;
+				background-color: #6864e2;
+				margin: 30px;
+				border-radius: 7px;
+				padding: 3px;
+				counter-increment: item;
+				box-shadow: 10px 5px #6864e26b;
+			}
+			.ranked li:before {
+				content: counter(item);
+				padding: 15px;
+				border-radius: 100px;
+				background-color: #6864e2;
+				margin: 10px;
+				font-weight: bold;
+			}
+			</style>
+			<h2>Top ${topX} ranked car companies </h2>		
 			<p>
-				<ol style="margin-left: 2em;"> ${rankingHtml} </ol> 
+				<ol style="margin-left: 2em; color: white;"> ${rankingHtml} </ol>  
 			</p>
-			<h1>All Companies</h1>
-			<p> ${companiesHtml} </p>`
+			</div>
+
+			<div class="allCompanies">
+			<style type="text/css" scoped>
+			.allCompanies a:link{
+				color: white;
+				background-color: #6864e2;
+				border-radius: 7px;
+				margin: 7px;
+				line-height: 3;
+				padding: 9px;
+				box-shadow: 5px 5px #6864e23d;
+			}
+			.allCompanies a:hover{
+				color: white;
+				text-decoration: none;
+			}
+			.allCompanies a:visited{
+				color: white;
+			}
+			</style>
+			<h2>All car companies</h2>
+			<p> ${companiesHtml} </p>
+			</div>
+			`
+			
 		sendResponse(res, html, companies.cached)
 	})
 })
@@ -280,9 +356,34 @@ app.get("/companies/:name", (req, res) => {
 
 	// Send reply to browser
 	getCompany(name).then(data => {
-		sendResponse(res, `<h1>${data.name}</h1><p>${data.origin}</p><p>${data.segment}</p><p><img src="${data.logo_link}"></p>`, data.cached)
+		sendResponse(res, `
+		<div class="singleCar">
+		<style type="text/css" scoped>
+		.background{
+			background-color: #6864e2;
+			color: white;
+			width: 500px;
+			border-radius: 100px;
+			box-shadow: 10px 5px #6864e26b;
+		}
+		.background img{
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.singleCar p, .singleCar h2 {
+			text-align: center;
+		}
+		</style>
+
+		<h2 style="width: 500px;">${data.name}</h2>
+		<p class="background"> The origin is: ${data.origin}</p>
+		<p class="background"> The Category is: ${data.segment}</p>
+		<p class="background" > <img src="${data.logo_link}"></p>
+		</div>`, data.cached)
+		
 	}).catch(err => {
-		sendResponse(res, `<h1>Error</h1><p>${err}</p>`, false)
+		sendResponse(res, `<h2>Error</h2><p>${err}</p>`, false)
 	})
 });
 
