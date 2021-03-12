@@ -39,7 +39,7 @@ data:
     INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Jaguar','United Kingdom','Luxury Vehicles','https://www.carlogos.org/car-logos/jaguar-logo.png');
     INSERT INTO companies (name, origin, segment, logo_link) VALUES ('GMC','United States','Pickup Trucks','https://www.carlogos.org/car-logos/gmc-logo.png');
     INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Buick','United States','Mass-Market Cars','https://www.carlogos.org/car-logos/buick-logo.png');
-    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Acura','Japan',',Luxury Vehicles','https://www.carlogos.org/car-logos/acura-logo.png');
+    INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Acura','Japan','Luxury Vehicles','https://www.carlogos.org/car-logos/acura-logo.png');
     INSERT INTO companies (name, origin, segment, logo_link) VALUES ('Bentley','United Kingdom','Ultra-luxury Cars','https://www.carlogos.org/car-logos/bentley-logo.png');
 
 
