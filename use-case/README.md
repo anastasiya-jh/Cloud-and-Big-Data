@@ -1,11 +1,7 @@
 # Use Case: Ranking the most popular car brands in the world.
 
-```json
-{ 
-	name: 'Porsche', 
-	timestamp: 1604325221 
-}
-```
+The main goal of this application is to build a data product in which the use of the data, generates the data needed to improve the product itself. In this application the collected data is counted and sorted. On the landingpage all car companies are listed and can be clicked. If clicked you can gather more information about the chosen company.
+It is also possible to generate up to 200 random car companies at once. Every five minutes a new Batch will be generated that holds the information of all visited car companies in that period of time. The output can be seen on the landingpage visualizing the top 5 list with the most viewed car brands. 
 
 ## Prerequisites
 
@@ -38,18 +34,19 @@ helm repo add stable https://charts.helm.sh/stable
 helm install --namespace=default --set hdfs.dataNode.replicas=1 --set yarn.nodeManager.replicas=1 --set hdfs.webhdfs.enabled=true my-hadoop-cluster stable/hadoop
 ```
 
-Deleting ingress if its there
-```bash
-kubectl delete ingress --all
-```
-
 ## Deploy
 
-To develop using [Skaffold](https://skaffold.dev/), use `skaffold dev` or with a wsl distribution use `skaffold dev --default-repo=192.168.49.2:49154`
-Adding a Split Terminal to forward the port:
+To develop using [Skaffold](https://skaffold.dev/), use `skaffold dev` or with a wsl distribution use `skaffold dev --default-repo=[minikube-ip]:[port]`
+
+Adding a Split Terminal to forward the port if started with a wsl distribution:
 ```bash
 kubectl port-forward deployment/popular-slides 3000:3000
 ```
 
 ## Watch
 To see the results in Browser type in `localhost:3000`
+
+## Contributors
+@sabrine-gamdou
+@anastasiya-jh
+
