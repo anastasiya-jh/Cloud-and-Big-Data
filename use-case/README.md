@@ -1,4 +1,4 @@
-# Use Case: Ranking the most popular car brands in the world.
+# Documentation: Ranking the most popular car brands in the world.
 
 The main goal of this application is to build a data product in which the use of the data, generates the data needed to improve the product itself. In this application the collected data is counted and sorted. On the landingpage all car companies are listed and can be clicked. If clicked you can gather more information about the chosen company.
 It is also possible to generate up to 200 random car companies at once. Every five minutes a new Batch will be generated that holds the information of all visited car companies in that period of time. The output can be seen on the landingpage visualizing the top 5 list with the most viewed car brands. 
