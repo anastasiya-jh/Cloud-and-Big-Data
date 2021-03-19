@@ -50,3 +50,45 @@ To see the results in Browser type in `localhost:3000`
 @sabrine-gamdou
 @anastasiya-jh
 
+# Lambda architecture and processing of information:
+The client/user accesses the webserver through the load balancer.
+The webserver receives the client's messages and then transfers them to the big data messaging framework in the backend.
+The processing of the data is found in the backend. From all the collected data, new data will be generated to improve the product which is the website top 5 car companies.
+The calculations and processing done in the big data layer, will later be fed into a database server. 
+When the webserver receives a request, it will first look in the cache server and this is for two reasons: 
+- First, to reduce the load on the database.
+- Second it is a faster process as the data is already available and there is no need to search for it in the database again.
+
+Whenever a car company is clicked, a json file is generated. This data is sent to kafka for processing. The output of kafka is later on saved in the database MySQL. The webserver fetches the data from the cache or the database.
+
+# Main components:
+![image](https://user-images.githubusercontent.com/47325924/111697462-e4e83700-8835-11eb-9b9d-e8fddde99744.png)
+
+- **Load balancer:** based on kubernetes to ditribute the client requests across the webservers.
+- **Web server:** a simple node.js app instance.
+- **Cache servers:** memcached as a memory and data caching system.
+- **Database server:** MySQL database to store the data.
+- **Data lake:** HDFS is used as the storage system to accommodate the big data in all its types.
+- **Big data messaging:** Kafka for stream handling and transporting the data from the data sources to a storage system.
+- **Big data processing:** Spark is running on a hadoop cluster and is reponsible for processing the data.
+
+# Applications:
+
+## Node.js:
+The connection to the kafka cluster is created in the node.js application. The kafka cluster is created with one ID, brocker and producer to send the data.
+--> the application is packaged using docker
+
+## Spark app:
+This app analyses the data read from the kafka cluster.
+Here the messages are deconstructed and aggredated: data is converted from binary to json data.
+The data is later shown on the console
+After every streaming batch actualisation, the data is saved in the MySQL database pro spark host / partition.
+This means : data will be saved in the database on every new batch.
+==> the application is packaged using docker
+
+# MySQL configmap (schema / inserts):
+The data used for this application are stored in a kubernetes ConfigMap.
+The database consists of 2 tables:
+- **Companies:** table that contains the information needed of every car company such as name, origin, segment and a url of the company's logo.
+- **Ranking:** table that contains the name of the company and the corresponding count number (number of views)
+	
