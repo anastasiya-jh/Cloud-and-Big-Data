@@ -5,20 +5,6 @@ It is also possible to generate up to 200 random car companies at once. Every fi
 
 ## Prerequisites
 
-Deleting all current helm services
-```bash
-helm delete my-hadoop-cluster 
-helm delete my-kafka-operator 
-```
-
-Clean up all services from already deployed applications
-```bash
-kubectl delete service --all
-kubectl delete replicaset --all
-kubectl delete deployment --all
-kubectl delete statefulset --all
-```
-
 A running Strimzi.io Kafka operator
 
 ```bash
@@ -45,10 +31,6 @@ kubectl port-forward deployment/popular-slides 3000:3000
 
 ## Watch
 To see the results in Browser type in `localhost:3000`
-
-## Contributors
-@sabrine-gamdou
-@anastasiya-jh
 
 # Lambda architecture and processing of information:
 The client/user accesses the webserver through the load balancer.
@@ -92,3 +74,6 @@ The database consists of 2 tables:
 - **Companies:** table that contains the information needed of every car company such as name, origin, segment and a url of the company's logo.
 - **Ranking:** table that contains the name of the company and the corresponding count number (number of views)
 	
+## Contributors
+@sabrine-gamdou
+@anastasiya-jh
